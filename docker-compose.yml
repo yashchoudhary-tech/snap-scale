@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:17
@@ -16,7 +14,37 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d snapscale"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: snapscale-backend
+    ports:
+      - "8000:8000"
+    # Use an env_file to load environment variables from a .env file
+    # ImageKit credentials and JWT secret should be provided via .env file or directly. 
+    env_file:
+    - .env
+    environment:
+      # DATABASE_URL uses the service name 'postgres' for the host
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/snapscale
+    depends_on:
+      postgres:
+        condition: service_healthy # wait for postgres to be ready
+    # For development, you might want to mount the app directory for live reloading
+    # volumes:
+    #   - ./app:/app/app
+    # command: uvicorn app.app:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
 
 volumes:
   postgres_data:
+  

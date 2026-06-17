@@ -1,0 +1,17 @@
+.venv
+env
+__pycache__
+.pytest_cache
+.mypy_cache
+
+.git
+.gitignore
+
+.env
+
+*.db
+
+.vscode
+.idea
+
+node_modules
