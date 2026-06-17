@@ -9,8 +9,11 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 from app.db import User, get_user_db
+import os
 
-SECRET = "randomstringforjwt"
+SECRET = os.getenv("JWT_SECRET")
+if not SECRET:
+    raise ValueError("JWT_SECRET environment variable not set. Please set it in your .env file or environment.")
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = SECRET
