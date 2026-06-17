@@ -4,6 +4,7 @@ from app.db import Post, create_db_and_tables, get_async_session, User
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from app.images import imagekit
 import shutil
 import os
@@ -73,12 +74,9 @@ async def get_feed(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_active_user)
 ):
-    result = await session.execute(select(Post).order_by(Post.created_at.desc()))
-    posts = [row[0] for row in result.all()]
-
-    result = await session.execute(select(User))
-    users = [row[0] for row in result.all()]
-    user_dict = {u.id: u.email for u in users} # not the efficient way to do this, but for this example it's fine
+    # Efficiently load the user relationship to avoid N+1 queries
+    result = await session.execute(select(Post).options(selectinload(Post.user)).order_by(Post.created_at.desc()))
+    posts = result.scalars().all()
 
     posts_data = []
     for post in posts:
@@ -92,7 +90,7 @@ async def get_feed(
                 "file_name": post.file_name,
                 "created_at": post.created_at.isoformat(),
                 "is_owner": post.user_id == user.id,
-                "email": user_dict.get(post.user_id, "Unknown")
+                "email": post.user.email if post.user else "Unknown"
             } 
         )
 

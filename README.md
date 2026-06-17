@@ -14,7 +14,7 @@ Snap-Scale is a high-performance, full-stack media sharing application. It allow
 
 - **Frontend**: Streamlit
 - **Backend**: FastAPI
-- **Database**: SQLAlchemy (Async) with SQLite/PostgreSQL
+- **Database**: SQLAlchemy (Async) with PostgreSQL
 - **Image Management**: ImageKit.io
 - **Authentication**: FastAPI Users (JWT Strategy)
 
@@ -100,7 +100,7 @@ Snap-Scale employs a client-server architecture with a Streamlit-based frontend 
 ### 2. Technology Choices
 -   **Frontend**: Streamlit (Python web framework for rapid UI development).
 -   **Backend**: FastAPI (Python web framework for building high-performance APIs).
--   **Database**: SQLAlchemy (ORM) with an asynchronous driver (`aiosqlite` for SQLite in development, easily swappable for `asyncpg` with PostgreSQL in production).
+-   **Database**: SQLAlchemy (ORM) with the `asyncpg` driver for PostgreSQL.
 -   **Authentication**: `fastapi-users` library with a JWT (JSON Web Token) strategy.
 -   **Media Management**: ImageKit.io SDK for uploading, storing, and transforming images/videos.
 -   **Environment Management**: `python-dotenv` for managing environment variables.
