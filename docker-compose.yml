@@ -24,7 +24,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile.backend
     container_name: snapscale-backend
     ports:
@@ -32,7 +32,7 @@ services:
     # Use an env_file to load environment variables from a .env file
     # ImageKit credentials and JWT secret should be provided via .env file or directly. 
     env_file:
-    - .env
+    - ./backend/.env
     environment:
       # DATABASE_URL uses the service name 'postgres' for the host
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/snapscale
